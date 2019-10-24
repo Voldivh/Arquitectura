@@ -1,12 +1,13 @@
-
 //=======================================================
 //  MODULE Definition
 //=======================================================
-module CC_DECODER #(parameter DATAWIDTH_DECODER_SELECTION=6, parameter DATAWIDTH_DECODER_OUT=8)(
+module MUX_2 #(parameter DATAWIDTH_MUX_SELECTION=1, parameter DATAWIDTH_BUS=32)(
 	//////////// OUTPUTS //////////
-	CC_DECODER_datadecoder_OutBUS,
+	CC_MUX_data_OutBUS,
 	//////////// INPUTS //////////
-	CC_DECODER_selection_InBUS
+	CC_MUX_data0_InBUS,
+	CC_MUX_data1_InBUS,	
+	CC_MUX_selection_InBUS
 );
 //=======================================================
 //  PARAMETER declarations
@@ -15,8 +16,10 @@ module CC_DECODER #(parameter DATAWIDTH_DECODER_SELECTION=6, parameter DATAWIDTH
 //=======================================================
 //  PORT declarations
 //=======================================================
-output reg	[DATAWIDTH_DECODER_OUT-1:0] CC_DECODER_datadecoder_OutBUS;
-input		[DATAWIDTH_DECODER_SELECTION-1:0] CC_DECODER_selection_InBUS;
+output reg	[DATAWIDTH_BUS-1:0] CC_MUX_data_OutBUS;
+input			[DATAWIDTH_BUS-1:0] CC_MUX_data0_InBUS;
+input			[DATAWIDTH_BUS-1:0] CC_MUX_data1_InBUS;
+input			[DATAWIDTH_MUX_SELECTION-1:0] CC_MUX_selection_InBUS;
 //=======================================================
 //  REG/WIRE declarations
 //=======================================================
@@ -27,16 +30,11 @@ input		[DATAWIDTH_DECODER_SELECTION-1:0] CC_DECODER_selection_InBUS;
 //INPUT LOGIC: COMBINATIONAL
 always@(*)
 begin
-	case (CC_DECODER_selection_InBUS)	
-		6'b000000: CC_DECODER_datadecoder_OutBUS = 8'b11111110;
-		6'b000001: CC_DECODER_datadecoder_OutBUS = 8'b11111101;
-		6'b000010: CC_DECODER_datadecoder_OutBUS = 8'b11111011;
-		6'b000011: CC_DECODER_datadecoder_OutBUS = 8'b11110111;
-		6'b000100: CC_DECODER_datadecoder_OutBUS = 8'b11101111;
-		6'b000101: CC_DECODER_datadecoder_OutBUS = 8'b11011111;
-		6'b000110: CC_DECODER_datadecoder_OutBUS = 8'b10111111;//PC
-		6'b000111: CC_DECODER_datadecoder_OutBUS = 8'b01111111;//IR
-		default  : CC_DECODER_datadecoder_OutBUS = 8'b11111111;//IR
+	case (CC_MUX_selection_InBUS)	
+	// Example to more outputs: WaitStart: begin sResetCounter = 0; sCuenteUP = 0; end
+		1'b0: CC_MUX_data_OutBUS = CC_MUX_data0_InBUS;
+		1'b1: CC_MUX_data_OutBUS = CC_MUX_data1_InBUS;
+		default :   CC_MUX_data_OutBUS = CC_MUX_data0_InBUS; // channel 0 is selected 
 	endcase
 end
 //=======================================================
@@ -45,3 +43,4 @@ end
 // OUTPUT LOGIC : COMBINATIONAL
 
 endmodule
+

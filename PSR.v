@@ -1,11 +1,18 @@
 //=======================================================
 //  MODULE Definition
 //=======================================================
-module BB_SYSTEM
+module PSR #(parameter DATAWIDTH_BUS=32)
 (
-//////////// INPUTS //////////
-	BB_SYSTEM_CLOCK_50,
-	BB_SYSTEM_RESET_InHigh
+	//////////// INPUTS //////////
+	// General In	
+	CLK,
+	// Flags In
+	Flags,
+	// Conditions In
+	SCC,
+	//////////// OUTPUTS //////////
+	// Flags Out
+	Out
 );
 //=======================================================
 //  PARAMETER declarations
@@ -14,20 +21,24 @@ module BB_SYSTEM
 //=======================================================
 //  PORT declarations
 //=======================================================
-input BB_SYSTEM_CLOCK_50;
-input BB_SYSTEM_RESET_InHigh;
+	input					CLK;
+	input					SCC;
+	input			[3:0] Flags;//Negative, Zero, Overflow, Carry
+	output reg	[3:0] Out;
+	initial				Out = 4'b0;
 //=======================================================
 //  REG/WIRE declarations
 //=======================================================
 
-
 //=======================================================
 //  Structural coding
 //=======================================================
-Processor PC
-(
-	.CLOCK(BB_SYSTEM_CLOCK_50),
-	.Rst(BB_SYSTEM_RESET_InHigh)
-);
+//OUTPUT LOGIC: COMBINATIONAL
+	always@(*)
+		begin
+			if(SCC)
+				Out = Flags;
+		end
+
 
 endmodule

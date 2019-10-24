@@ -1,11 +1,15 @@
 //=======================================================
 //  MODULE Definition
 //=======================================================
-module BB_SYSTEM
+module CSAI #(parameter DATAWIDTH_BUS=32)
 (
-//////////// INPUTS //////////
-	BB_SYSTEM_CLOCK_50,
-	BB_SYSTEM_RESET_InHigh
+	//////////// INPUTS //////////
+	CLK, 
+	RESET,
+	ACK,
+	CS,
+	//////////// OUTPUTS //////////
+	OUT
 );
 //=======================================================
 //  PARAMETER declarations
@@ -14,20 +18,30 @@ module BB_SYSTEM
 //=======================================================
 //  PORT declarations
 //=======================================================
-input BB_SYSTEM_CLOCK_50;
-input BB_SYSTEM_RESET_InHigh;
+	input					 CLK;
+	input					 RESET;
+	input					 ACK;
+	input			[10:0] CS;
+	output reg	[10:0] OUT;
 //=======================================================
 //  REG/WIRE declarations
 //=======================================================
-
-
 //=======================================================
 //  Structural coding
 //=======================================================
-Processor PC
-(
-	.CLOCK(BB_SYSTEM_CLOCK_50),
-	.Rst(BB_SYSTEM_RESET_InHigh)
-);
-
+// INPUT LOGIC: SEQUENTIAL
+	always@(posedge CLK)
+		begin 
+			if(RESET == 1)
+				OUT <= 0;
+			else if(ACK==0)
+				OUT = CS + 1;
+			else
+				OUT = CS;
+		end
+// INPUT LOGIC: COMBINATIONAL
+//=======================================================
+//  Outputs
+//=======================================================
+// OUTPUT LOGIC : COMBINATIONAL
 endmodule
